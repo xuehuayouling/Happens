@@ -11,7 +11,7 @@ import com.ysq.happens.transition.NewsSearch;
 import org.jsoup.nodes.Document;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
