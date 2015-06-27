@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatebaseHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
     private static final String LOCAL_DB_NAME = "news.db";
-    private static final String NEWS_TB_NAME = "news";
+    public static final String NEWS_TB_NAME = "news";
     private Context mContext;
 
     public DatebaseHelper(Context context) {
@@ -21,14 +21,14 @@ public class DatebaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + NEWS_TB_NAME + "(" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + NEWS_TB_NAME + " (" +
                 " id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 NewsProvider.NEWS_TITLE + " TEXT, " +
                 NewsProvider.NEWS_OVERVIEW + " TEXT, " +
                 NewsProvider.NEWS_BODY + " TEXT, " +
                 NewsProvider.NEWS_DATE + " INTEGER, " +
-                NewsProvider.NEWS_SOURCE + " TEXT, " +
-                NewsProvider.NEWS_AUTHOR + " TEXT, " +
+                NewsProvider.NEWS_SOURCE + " TEXT UNIQUE, " +
+                NewsProvider.NEWS_AUTHOR + " TEXT " +
                 ")");
     }
 
