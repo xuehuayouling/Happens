@@ -15,6 +15,8 @@ import java.util.List;
  * Created by Administrator on 2015/6/27.
  */
 public class NewsSearchManager {
+    public static final int MESSAGE_NEW_LIST_SEARCH_END = 0;
+    public static final int MESSAGE_NEW_DETAILS_SEARCH_END = 1;
     private Context mContext;
     public NewsSearchManager(Context context) {
         mContext = context;
@@ -27,7 +29,7 @@ public class NewsSearchManager {
                 ContentValues[] values = getContentValues(newsList);
                 Log.d("NewsSearchManager", values[0].toString());
                 mContext.getContentResolver().bulkInsert(NewsProvider.NEWS_CONTENT_URI, values);
-                handler.sendEmptyMessage(0);
+                handler.sendEmptyMessage(MESSAGE_NEW_LIST_SEARCH_END);
             }
         });
         listSearch.search();
@@ -40,5 +42,19 @@ public class NewsSearchManager {
         }
         ContentValues[] arry = new ContentValues[valuesList.size()];
         return valuesList.toArray(arry);
+    }
+
+    public void searchNewsDetails(String url, final Handler handler) {
+        NewsDetailsSearch search = new NewsDetailsSearch(url, new NewsDetailsSearch.NewsDetailsSearchEndListener() {
+            @Override
+            public void onNeasSearchEnd(Object news) {
+                if (news instanceof News) {
+                    mContext.getContentResolver().update(NewsProvider.NEWS_CONTENT_URI, ((News) news).toContentValues(), NewsProvider.NEWS_SOURCE + " = '"
+                    + ((News) news).getSource() + "'", null);
+                    handler.sendEmptyMessage(MESSAGE_NEW_DETAILS_SEARCH_END);
+                }
+            }
+        });
+        search.search();
     }
 }

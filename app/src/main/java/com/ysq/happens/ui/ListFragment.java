@@ -3,6 +3,7 @@ package com.ysq.happens.ui;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Handler;
@@ -12,11 +13,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ysq.happens.R;
 import com.ysq.happens.database.NewsProvider;
+import com.ysq.happens.transition.News;
 import com.ysq.happens.transition.NewsSearchManager;
 import com.ysq.happens.transition.NewsSearchThread;
 
@@ -28,21 +31,17 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ListFragment extends Fragment implements NewsSearchThread.NewsSearchThreadEndListener {
+public class ListFragment extends Fragment implements NewsSearchThread.NewsSearchThreadEndListener, AdapterView.OnItemClickListener {
     private static final String TAG = "ListFragment";
     private LoaderManager mLoadermanager;
     private ListView mListView;
     private NewsListAdapter mListAdapter;
     private static final int LOADER_NEWS_LIST = 0;
-    private static final String[] NEWS_LIST_PROJECTS = {
-            "_id",
-            NewsProvider.NEWS_TITLE
-    };
 
     private LoaderManager.LoaderCallbacks<Cursor> mNewsListLoaderCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
         @Override
         public Loader onCreateLoader(int id, Bundle args) {
-            CursorLoader loader = new CursorLoader(getActivity(),NewsProvider.NEWS_CONTENT_URI, NEWS_LIST_PROJECTS, null, null, null);
+            CursorLoader loader = new CursorLoader(getActivity(),NewsProvider.NEWS_CONTENT_URI, Util.NEWS_LIST_PROJECTS, null, null, null);
             return loader;
         }
 
@@ -73,6 +72,7 @@ public class ListFragment extends Fragment implements NewsSearchThread.NewsSearc
         mListView = (ListView) view.findViewById(R.id.news_list);
         mListAdapter = new NewsListAdapter(getActivity(), null, false);
         mListView.setAdapter(mListAdapter);
+        mListView.setOnItemClickListener(this);
         NewsSearchManager manager = new NewsSearchManager(getActivity());
         manager.searchNeteaseNewsList("http://news.163.com/", mHandler);
         return view;
@@ -80,5 +80,16 @@ public class ListFragment extends Fragment implements NewsSearchThread.NewsSearc
 
     @Override
     public void onSearchThreadEnd(Document document) {
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Object o = mListAdapter.getItem(position);
+        if (o instanceof News){
+            Intent intent = new Intent(getActivity(), NewsDetailsActivity.class);
+            Bundle bundle = new Bundle();
+            intent.putExtra(NewsProvider.NEWS_SOURCE, ((News) o).getSource());
+            startActivity(intent);
+        }
     }
 }

@@ -11,11 +11,13 @@ import android.widget.TextView;
 
 import com.ysq.happens.R;
 import com.ysq.happens.database.NewsProvider;
+import com.ysq.happens.transition.News;
 
 /**
  * Created by Administrator on 2015/6/28.
  */
 public class NewsListAdapter extends CursorAdapter{
+
     public NewsListAdapter(Context context, Cursor c, boolean autoRequery) {
         super(context, c, autoRequery);
     }
@@ -34,4 +36,18 @@ public class NewsListAdapter extends CursorAdapter{
             title.setText(cursor.getString(cursor.getColumnIndex(NewsProvider.NEWS_TITLE)));
         }
     }
+
+    @Override
+    public Object getItem(int position) {
+        Cursor cursor = getCursor();
+        if (cursor.moveToPosition(position)) {
+            News news = new News();
+            news.setTitle(cursor.getString(cursor.getColumnIndex(NewsProvider.NEWS_TITLE)));
+            news.setSource(cursor.getString(cursor.getColumnIndex(NewsProvider.NEWS_SOURCE)));
+            return news;
+        }
+        return super.getItem(position);
+    }
+
+
 }

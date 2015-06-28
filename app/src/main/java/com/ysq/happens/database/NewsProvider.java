@@ -33,12 +33,15 @@ public class NewsProvider extends ContentProvider {
     public int bulkInsert(Uri uri, ContentValues[] values) {
         SQLiteDatabase db = mDatebaseHelper.getWritableDatabase();
         db.beginTransaction();
+        int length = 0;
         for (ContentValues value : values) {
-            db.insert(DatebaseHelper.NEWS_TB_NAME, null, value);
+            if (-1 != db.insert(DatebaseHelper.NEWS_TB_NAME, null, value)) {
+                length++;
+            }
         }
         db.setTransactionSuccessful();
         db.endTransaction();
-        return values.length;
+        return length;
     }
 
     @Override
@@ -75,7 +78,8 @@ public class NewsProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mDatebaseHelper.getWritableDatabase();
+        return db.update(DatebaseHelper.NEWS_TB_NAME, values, selection, selectionArgs);
     }
 
 
