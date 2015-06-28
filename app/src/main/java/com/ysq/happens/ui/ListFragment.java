@@ -36,6 +36,7 @@ public class ListFragment extends Fragment implements NewsSearchThread.NewsSearc
     private LoaderManager mLoadermanager;
     private ListView mListView;
     private NewsListAdapter mListAdapter;
+    private volatile boolean isSearching;
     private static final int LOADER_NEWS_LIST = 0;
 
     private LoaderManager.LoaderCallbacks<Cursor> mNewsListLoaderCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
@@ -59,7 +60,13 @@ public class ListFragment extends Fragment implements NewsSearchThread.NewsSearc
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            mLoadermanager.restartLoader(LOADER_NEWS_LIST, null, mNewsListLoaderCallbacks);
+            switch (msg.what) {
+                case NewsSearchManager.MESSAGE_NEW_LIST_SEARCH_END:
+                    mLoadermanager.restartLoader(LOADER_NEWS_LIST, null, mNewsListLoaderCallbacks);
+                    isSearching = false;
+                    break;
+
+            }
         }
     };
 
@@ -73,13 +80,24 @@ public class ListFragment extends Fragment implements NewsSearchThread.NewsSearc
         mListAdapter = new NewsListAdapter(getActivity(), null, false);
         mListView.setAdapter(mListAdapter);
         mListView.setOnItemClickListener(this);
-        NewsSearchManager manager = new NewsSearchManager(getActivity());
-        manager.searchNeteaseNewsList("http://news.163.com/", mHandler);
+        if (!isSearching) {
+            NewsSearchManager manager = new NewsSearchManager(getActivity());
+            manager.searchNeteaseNewsList("http://news.163.com/", mHandler);
+        }
         return view;
     }
 
     @Override
     public void onSearchThreadEnd(Document document) {
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isSearching) {
+            NewsSearchManager manager = new NewsSearchManager(getActivity());
+            manager.searchNeteaseNewsList("http://news.163.com/", mHandler);
+        }
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.ysq.happens.database.NewsProvider;
 

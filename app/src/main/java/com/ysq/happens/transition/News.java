@@ -88,7 +88,7 @@ public class News {
             values.put(NewsProvider.NEWS_DATE, date);
         }
         if (!TextUtils.isEmpty(source)) {
-            values.put(NewsProvider.NEWS_SOURCE, source);
+            values.put(NewsProvider.NEWS_SOURCE, source.trim());
         }
         if (!TextUtils.isEmpty(author)) {
             values.put(NewsProvider.NEWS_AUTHOR, author);
