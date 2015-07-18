@@ -31,6 +31,7 @@ public class NewsListSearch extends NewsSearch implements NewsSearchThread.NewsS
 
     @Override
     public void onSearchThreadEnd(Document document) {
+        if (document == null) return;
         List<News> list = new ArrayList<News>();
         HashMap<String, String> map = new HashMap<String, String>();
         Elements elements = document.getElementsByAttributeValueContaining("href", "news.163.com/15");

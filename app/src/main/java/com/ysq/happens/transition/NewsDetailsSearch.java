@@ -32,6 +32,7 @@ public class NewsDetailsSearch extends NewsSearch implements NewsSearchThread.Ne
 
     @Override
     public void onSearchThreadEnd(Document document) {
+        if (document == null) return;
         News news = new News();
         news.setSource(mUrl);
         Elements elements = document.getElementsByAttributeValue("class", "article-body");
