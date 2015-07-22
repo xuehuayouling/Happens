@@ -3,6 +3,7 @@
     package="com.ysq.happens" >
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,6 +23,13 @@
         <provider
             android:authorities="com.ysq.haappens"
             android:name=".database.NewsProvider"/>
+        <service android:name=".services.PushServer"
+            android:exported="false"/>
+        <receiver android:name=".services.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
